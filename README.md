@@ -1,2 +1,2 @@
 # devsecops-diplom
-idplom scripts
+scripts for my diplom
