@@ -1,0 +1,2 @@
+# devsecops-diplom
+idplom scripts
