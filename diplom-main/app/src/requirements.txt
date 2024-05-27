@@ -1,0 +1,4 @@
+Flask==2.2.5
+prometheus-flask-exporter==0.18.7
+bandit==1.7.7
+
