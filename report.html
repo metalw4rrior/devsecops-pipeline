@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CI/CD Scan Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
+        pre { background-color: #f9f9f9; padding: 10px; overflow-x: auto; }
+        h1, h2 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>CI/CD Scan Report</h1>
+    <h2>Safety Report</h2>
+    <pre>{
+  "affected_packages": {},
+  "announcements": [],
+  "ignored_vulnerabilities": [],
+  "remediations": {},
+  "remediations_results": {
+    "remediations_applied": {},
+    "remediations_skipped": {},
+    "vulnerabilities_fixed": []
+  },
+  "report_meta": {
+    "account": "",
+    "api_key": false,
+    "audit_and_monitor": false,
+    "git": {
+      "branch": "",
+      "commit": "403b37aab027db8e1bea943a4677676536c932aa",
+      "dirty": false,
+      "origin": "https://gitlab-ci-token:64_KWqGtjimVA_d_Xzy_gzf@gitlab.tgt72.ru/kozlova_an/diplom.git",
+      "tag": ""
+    },
+    "json_version": "1.1",
+    "local_database_path": null,
+    "packages_found": 3,
+    "policy_file": null,
+    "policy_file_source": "local",
+    "project": null,
+    "remediation_mode": "NON_INTERACTIVE",
+    "remediations_attempted": 0,
+    "remediations_completed": 0,
+    "remediations_recommended": 0,
+    "safety_version": "3.2.0",
+    "scan_target": "files",
+    "scanned": [
+      "app/src/requirements.txt"
+    ],
+    "scanned_full_path": [
+      "/builds/kozlova_an/diplom/app/src/requirements.txt"
+    ],
+    "target_languages": [
+      "python"
+    ],
+    "telemetry": {
+      "os_description": "Linux-4.15.0-213-generic-x86_64-with-glibc2.36",
+      "os_release": "4.15.0-213-generic",
+      "os_type": "Linux",
+      "python_version": "3.9.19",
+      "safety_command": "check",
+      "safety_options": {
+        "files": {
+          "-r": 1
+        },
+        "json": {
+          "--json": 1
+        }
+      },
+      "safety_source": "cli",
+      "safety_version": "3.2.0"
+    },
+    "timestamp": "2024-05-21 05:45:46",
+    "vulnerabilities_found": 0,
+    "vulnerabilities_ignored": 0
+  },
+  "scanned_packages": {
+    "bandit": {
+      "name": "bandit",
+      "requirements": [
+        {
+          "extras": [],
+          "found": "/builds/kozlova_an/diplom/app/src/requirements.txt",
+          "marker": null,
+          "name": "bandit",
+          "raw": "bandit==1.7.7",
+          "specifier": "==1.7.7",
+          "url": null
+        }
+      ],
+      "version": "1.7.7"
+    },
+    "flask": {
+      "name": "flask",
+      "requirements": [
+        {
+          "extras": [],
+          "found": "/builds/kozlova_an/diplom/app/src/requirements.txt",
+          "marker": null,
+          "name": "Flask",
+          "raw": "Flask==2.2.5",
+          "specifier": "==2.2.5",
+          "url": null
+        }
+      ],
+      "version": "2.2.5"
+    },
+    "prometheus-flask-exporter": {
+      "name": "prometheus-flask-exporter",
+      "requirements": [
+        {
+          "extras": [],
+          "found": "/builds/kozlova_an/diplom/app/src/requirements.txt",
+          "marker": null,
+          "name": "prometheus-flask-exporter",
+          "raw": "prometheus-flask-exporter==0.18.7",
+          "specifier": "==0.18.7",
+          "url": null
+        }
+      ],
+      "version": "0.18.7"
+    }
+  },
+  "vulnerabilities": []
+}</pre>
+    <h2>Bandit Report</h2>
+    <pre>{}</pre>
+    <h2>Test Results</h2>
+    <pre></pre>
+</body>
+</html>

@@ -1,0 +1,107 @@
+stages:
+  - build
+  - test
+  - sast_sonar
+  - scan_safety
+  - scan_bandit
+  - deploy
+
+variables:
+  DOCKER_IMAGE: your_registry/your_project
+
+build:
+  stage: build
+  image: your-registry/docker:latest
+  script:
+    - docker info
+    - docker build -t $DOCKER_IMAGE app/
+    - echo $REGISTRY_PASS | docker login -u $REGISTRY_LOGIN --password-stdin your_registry
+    - docker push $DOCKER_IMAGE
+  except:
+    - tags
+  only:
+    - main    
+
+
+test:
+  stage: test
+  image: your_registry/python:3.9
+  script:
+    - python -m unittest discover app/
+  except:
+    - tags
+  only:
+    - main
+
+scan_safety:
+  stage: scan_safety
+  image: your_registry/python:3.9
+  script:
+    - pip install safety
+    - pip install -r app/src/requirements.txt
+    - safety check -r app/src/requirements.txt 
+  except:
+    - tags
+  only:
+    - main
+  allow_failure: true
+
+scan_bandit:
+  stage: scan_bandit
+  image: your_registry/python:3.9
+  script:
+    - pip install bandit
+    - bandit -r app/  
+  except:
+    - tags
+
+  only:
+    - main
+
+sast_sonar:
+  stage: sast_sonar
+  image:
+    name: your_registry/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner
+  except:
+    - tags
+  only:
+    - main
+  allow_failure: true
+deploy_job:
+  stage: deploy
+  image: your_registry/alpine:latest
+  before_script:
+    - apk add --no-cache git
+    - git config --global user.email "your@mail"
+    - git config --global user.name "ci/cd"
+  script:
+    - echo "Deploying changes from main to test..."
+    - git fetch origin                     
+    - git checkout test || git checkout -b test   
+    - git reset --hard origin/main  
+    - git push --force "https://$gitlab_login:$gitlab_pass@your_gitlab" HEAD:test       
+  only:
+    - main
+  when: on_success
+
+
+
+
+
+
+
+
+
+
+
+
