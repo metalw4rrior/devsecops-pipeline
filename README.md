@@ -1,6 +1,6 @@
 # DevSecOps Pipeline
 
-Конвейер DevSecOps использует GitLab CI/CD, интегрируя методы обеспечения безопасности и проверки соответствия на каждом этапе конвейера. 
+The DevSecOps pipeline utilizes GitLab CI/CD, integrating security assurance and compliance checks at each stage of the pipeline.
 
 ## Technologies used
 
@@ -12,20 +12,18 @@
 
 ## Project structure
 
-- `app/`: Содержит исходный код и файл настройки для примера веб-приложения
-- `.gitlab-ci.yml`: Определяет конфигурацию конвейера GitLab CI/CD.
-- `sonar-project.properties`: Определяет конфигурацию Sonarqube.
+- `app/`: Contains the source code and configuration file for a sample web application
+- `.gitlab-ci.yml`: Defines the GitLab CI/CD pipeline configuration
+- `sonar-project.properties`: Configures SonarQube settings
 ## How it works
 
-1. Конвейер GitLab CI/CD запускается при нажатии на код или запросе на слияние.
-2. Конвейер создает образ Docker для веб-приложения, используя файл Docker в каталоге `app/`.
-3. Конвейер запускает статическое тестирование безопасности приложений (SAST) с использованием SonarQube для сканирования исходного кода на наличие уязвимостей.
-4. Конвейер выполняет автоматическое сканирование зависимостей с использованием Safety для выявления уязвимостей в зависимостях и библиотеках приложения.
-5. Конвейер коммитит чистый код в основную ветку проекта
+The GitLab CI/CD pipeline triggers on code push or merge request.
+The pipeline builds a Docker image for the web application using the Dockerfile in the app/ directory.
+Security Static Application Testing (SAST) is performed using SonarQube to scan the source code for vulnerabilities.
+Automatic dependency scanning is conducted using Safety to detect vulnerabilities in application dependencies and libraries.
+The pipeline commits clean code to the project's main branch.
 
-Для того, чтобы заставить данный пайплайн работать, необходимо развернуть сервер Sonarqube и поднять виртуальную машину под гитлаб-раннер. На гитлаб-раннере
-необходимо установить Docker. Также в условиях ухода Dockerhub из РФ (уже неактуально) лучше развернуть локальный Docker-registry и поместить туда все необходимые образы. 
-Не стоит забывать и про локальный сервер gitlab. В настройках проекта внести нужные пароли и назначить для них защищенные переменные. 
+To set up this pipeline, deploy a SonarQube server and provision a virtual machine for GitLab Runner. Docker must be installed on the GitLab Runner. Previously, due to Dockerhub restrictions in Russia (no longer relevant), consider deploying a local Docker registry for necessary images. Ensure to configure secure variables with appropriate passwords in the project settings on GitLab.
 
 
 
