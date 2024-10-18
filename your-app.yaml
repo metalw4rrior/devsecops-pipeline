@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: merger-api
+  namespace: testing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: your-app
+  template:
+    metadata:
+      labels:
+        app: your-app
+    spec:
+      imagePullSecrets:
+        - name: your-secret  # Указываем секрет для доступа к приватному реестру
+      containers:
+        - name: merger-api
+          image: your-registry/your-app:latest
+          ports:
+            - containerPort: your-port
+          envFrom:
+            - secretRef:
+                name: your-prod-secret  # Секрет с данными для окружения
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: your-app-service
+  namespace: testing  # Укажите нужный namespace
+spec:
+  type: NodePort
+  ports:
+    - port: your-port  # Порт, на который будет поступать трафик
+      targetPort: your-port  # Порт контейнера
+      nodePort: your-port  # Порт, на котором сервис будет доступен на узлах
+  selector:
+    app: your-app
