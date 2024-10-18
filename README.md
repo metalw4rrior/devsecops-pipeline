@@ -1,6 +1,7 @@
 # DevSecOps Pipeline
 
-The DevSecOps pipeline utilizes GitLab CI/CD, integrating security assurance and compliance checks at each stage of the pipeline.
+Этот пайплайн автоматизирует сборку, тестирование  и деплой приложения в кубернетес кластер. 
+Гитлаб-раннер является подой кубернетеса.
 
 ## Technologies used
 
@@ -9,22 +10,32 @@ The DevSecOps pipeline utilizes GitLab CI/CD, integrating security assurance and
 - SonarQube
 - Safety (Python dependency scanner)
 - Bandit
+- Kubernetes
 
 ## Project structure
 
-- `app/`: Contains the source code and configuration file for a sample web application
-- `.gitlab-ci.yml`: Defines the GitLab CI/CD pipeline configuration
-- `sonar-project.properties`: Configures SonarQube settings
+- `app/`: Тут лежит пример приложения
+- `.gitlab-ci.yml`: Конфигурация самого пайплайна
+- `sonar-project.properties`: Настройки для SonarQube
+- `kubeconfig.yaml`: Пример конфига для подключения к кластеру
+- `your-app.yaml`: Пример манифеста для запуска приложения в кластере
+
+
 ## How it works
 
-The GitLab CI/CD pipeline triggers on code push or merge request.
-The pipeline builds a Docker image for the web application using the Dockerfile in the app/ directory.
-Security Static Application Testing (SAST) is performed using SonarQube to scan the source code for vulnerabilities.
-Automatic dependency scanning is conducted using Safety to detect vulnerabilities in application dependencies and libraries.
-The pipeline commits clean code to the project's main branch.
 
-To set up this pipeline, deploy a SonarQube server and provision a virtual machine for GitLab Runner. Docker must be installed on the GitLab Runner. Previously, due to Dockerhub restrictions in Russia (no longer relevant), consider deploying a local Docker registry for necessary images. Ensure to configure secure variables with appropriate passwords in the project settings on GitLab.
 
+В настройки проекта - CI/CD - Variables:
+  KUBERNETES_API_URL: Сюда пихай адрес кластера
+  KUBERNETES_NAMESPACE: Сюда пихай пространство имен в котором будешь запускать свои поделки
+  KUBERNETES_CA_CERT: Сюда пихай корневой сертификат кубера
+  KUBERNETES_CLIENT_CERT: Сюда пихай сертификат клиента (роли) с которой будет работать раннер
+  KUBERNETES_CLIENT_KEY: Сюда пихай ключ клиента (роли) с которой будет работать раннер
+  DOCKER_USER: Тут логин для докер регистри
+  DOCKER_PASSWORD: Тут пароль для докер регистри
+  DOCKER_SOCK: "unix:///var/run/docker.sock" - Тут сокет докера. Образ гитлаб-раннера лучше собирать с ним вместе. 
+  DOCKER_HOST: Адрес твоего регистри
+  DOCKER_IMAGE: То как ты назовешь контейнер с кодом
 
 
 
