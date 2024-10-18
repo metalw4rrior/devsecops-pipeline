@@ -7,35 +7,46 @@ stages:
   - deploy
 
 variables:
-  DOCKER_IMAGE: your_registry/your_project
+  KUBERNETES_API_URL: "${KUBERNETES_API_URL}"
+  KUBERNETES_TOKEN: "${KUBERNETES_TOKEN}"
+  KUBERNETES_NAMESPACE: "${KUBERNETES_NAMESPACE}"
+  KUBERNETES_CA_CERT: "${KUBERNETES_CA_CERT}"
+  KUBERNETES_CLIENT_CERT: "${KUBERNETES_CLIENT_CERT}"
+  KUBERNETES_CLIENT_KEY: "${KUBERNETES_CLIENT_KEY}"
+  DOCKER_USER: "${DOCKER_USER}"
+  DOCKER_PASSWORD: "${DOCKER_PASSWORD}"
+  DOCKER_SOCK: "unix:///var/run/docker.sock"
+  DOCKER_HOST: "${DOCKER_HOST}"
+  DOCKER_IMAGE: "${DOCKER_IMAGE}"
+
 
 build:
   stage: build
-  image: your-registry/docker:latest
+  image: $DOCKER_HOST/docker:latest
   script:
     - docker info
     - docker build -t $DOCKER_IMAGE app/
-    - echo $REGISTRY_PASS | docker login -u $REGISTRY_LOGIN --password-stdin your_registry
+    - echo $REGISTRY_PASS | docker login -u $REGISTRY_LOGIN --password-stdin $DOCKER_HOST
     - docker push $DOCKER_IMAGE
   except:
     - tags
   only:
-    - main    
+    - test
 
 
 test:
   stage: test
-  image: your_registry/python:3.9
+  image: $DOCKER_HOST/python:3.9
   script:
     - python -m unittest discover app/
   except:
     - tags
   only:
-    - main
+    - test
 
 scan_safety:
   stage: scan_safety
-  image: your_registry/python:3.9
+  image: $DOCKER_HOST/python:3.9
   script:
     - pip install safety
     - pip install -r app/src/requirements.txt
@@ -43,12 +54,12 @@ scan_safety:
   except:
     - tags
   only:
-    - main
+    - test
   allow_failure: true
 
 scan_bandit:
   stage: scan_bandit
-  image: your_registry/python:3.9
+  image: $DOCKER_HOST/python:3.9
   script:
     - pip install bandit
     - bandit -r app/  
@@ -56,12 +67,12 @@ scan_bandit:
     - tags
 
   only:
-    - main
+    - test
 
 sast_sonar:
   stage: sast_sonar
   image:
-    name: your_registry/sonar-scanner-cli:latest
+    name: $DOCKER_HOST/sonar-scanner-cli:latest
     entrypoint: [""]
   variables:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
@@ -75,24 +86,26 @@ sast_sonar:
   except:
     - tags
   only:
-    - main
+    - test
   allow_failure: true
+
+
 deploy_job:
   stage: deploy
-  image: your_registry/alpine:latest
-  before_script:
-    - apk add --no-cache git
-    - git config --global user.email "your@mail"
-    - git config --global user.name "ci/cd"
+  tags:
+    - kubernetes
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
   script:
-    - echo "Deploying changes from main to test..."
-    - git fetch origin                     
-    - git checkout test || git checkout -b test   
-    - git reset --hard origin/main  
-    - git push --force "https://$gitlab_login:$gitlab_pass@your_gitlab" HEAD:test       
-  only:
-    - main
-  when: on_success
+    - echo "$KUBERNETES_CA_CERT" > ca.crt
+    - echo "$KUBERNETES_CLIENT_CERT" > gitlab-sa.crt
+    - echo "$KUBERNETES_CLIENT_KEY" > gitlab-sa.key
+    - export KUBECONFIG=$(pwd)/kubeconfig.yaml
+    - kubectl get nodes
+    - kubectl apply -f your_manifest.yaml
+    - kubectl set image deployment/your_deployment your_app=your_registry
+    - kubectl rollout restart deployment/your_deployment -n testing
 
 
 
